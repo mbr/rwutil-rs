@@ -21,8 +21,12 @@ pub trait LengthWriteExt : io::Write {
 pub trait LengthReadExt : io::Read {
     fn read_u8_prefixed(&mut self, buf: &mut Vec<u8>) ->
         io::Result<u8>;
-    // fn read_u16_prefixed(&mut self, buf: &mut Vec<u8>) ->
-    //     io::Result<u16>;
+    fn read_u16_prefixed<T: ByteOrder>(&mut self, buf: &mut Vec<u8>) ->
+        io::Result<u16>;
+    fn read_u32_prefixed<T: ByteOrder>(&mut self, buf: &mut Vec<u8>) ->
+        io::Result<u32>;
+    fn read_u64_prefixed<T: ByteOrder>(&mut self, buf: &mut Vec<u8>) ->
+        io::Result<u64>;
 }
 
 impl<W: io::Write> LengthWriteExt for W {
@@ -70,6 +74,42 @@ impl<R: io::Read> LengthReadExt for R {
         try!(self.read_exact(&mut buf));
         Ok(len)
     }
+
+    fn read_u16_prefixed<T: ByteOrder>(&mut self, mut buf: &mut Vec<u8>) ->
+    io::Result<u16> {
+        let len = try!(self.read_u16::<T>());
+
+        // expand size of buffer to fit new data. this will hopefully not
+        // shrink the vector
+        buf.resize(len as usize, 0);
+
+        try!(self.read_exact(&mut buf));
+        Ok(len)
+    }
+
+    fn read_u32_prefixed<T: ByteOrder>(&mut self, mut buf: &mut Vec<u8>) ->
+    io::Result<u32> {
+        let len = try!(self.read_u32::<T>());
+
+        // expand size of buffer to fit new data. this will hopefully not
+        // shrink the vector
+        buf.resize(len as usize, 0);
+
+        try!(self.read_exact(&mut buf));
+        Ok(len)
+    }
+
+    fn read_u64_prefixed<T: ByteOrder>(&mut self, mut buf: &mut Vec<u8>) ->
+    io::Result<u64> {
+        let len = try!(self.read_u64::<T>());
+
+        // expand size of buffer to fit new data. this will hopefully not
+        // shrink the vector
+        buf.resize(len as usize, 0);
+
+        try!(self.read_exact(&mut buf));
+        Ok(len)
+    }
 }
 
 #[cfg(test)]
@@ -85,8 +125,8 @@ mod test {
 
         assert_eq!(expected, buf);
 
-        let mut out: Vec<u8> = Vec::new();
-        buf.as_slice().read_u8_prefixed(&mut out);
+        let mut out = Vec::new();
+        buf.as_slice().read_u8_prefixed(&mut out).unwrap();
         assert_eq!(out, b"abcde");
     }
 
@@ -97,6 +137,10 @@ mod test {
         buf.write_u16_prefixed::<BigEndian>(b"abcde").unwrap();
 
         assert_eq!(expected, buf);
+
+        let mut out = Vec::new();
+        buf.as_slice().read_u16_prefixed::<BigEndian>(&mut out).unwrap();
+        assert_eq!(out, b"abcde");
     }
 
     #[test]
@@ -106,6 +150,10 @@ mod test {
         buf.write_u32_prefixed::<BigEndian>(b"abcde").unwrap();
 
         assert_eq!(expected, buf);
+
+        let mut out = Vec::new();
+        buf.as_slice().read_u32_prefixed::<BigEndian>(&mut out).unwrap();
+        assert_eq!(out, b"abcde");
     }
 
     #[test]
@@ -116,6 +164,10 @@ mod test {
         buf.write_u64_prefixed::<BigEndian>(b"abcde").unwrap();
 
         assert_eq!(expected, buf);
+
+        let mut out = Vec::new();
+        buf.as_slice().read_u64_prefixed::<BigEndian>(&mut out).unwrap();
+        assert_eq!(out, b"abcde");
     }
 
     #[test]
@@ -125,6 +177,10 @@ mod test {
         buf.write_u16_prefixed::<LittleEndian>(b"abcde").unwrap();
 
         assert_eq!(expected, buf);
+
+        let mut out = Vec::new();
+        buf.as_slice().read_u16_prefixed::<LittleEndian>(&mut out).unwrap();
+        assert_eq!(out, b"abcde");
     }
 
     #[test]
@@ -134,6 +190,10 @@ mod test {
         buf.write_u32_prefixed::<LittleEndian>(b"abcde").unwrap();
 
         assert_eq!(expected, buf);
+
+        let mut out = Vec::new();
+        buf.as_slice().read_u32_prefixed::<LittleEndian>(&mut out).unwrap();
+        assert_eq!(out, b"abcde");
     }
 
     #[test]
@@ -144,5 +204,9 @@ mod test {
         buf.write_u64_prefixed::<LittleEndian>(b"abcde").unwrap();
 
         assert_eq!(expected, buf);
+
+        let mut out = Vec::new();
+        buf.as_slice().read_u64_prefixed::<LittleEndian>(&mut out).unwrap();
+        assert_eq!(out, b"abcde");
     }
 }
