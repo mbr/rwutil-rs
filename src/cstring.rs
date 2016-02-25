@@ -1,7 +1,7 @@
-use std::{io, string};
-use std::io::{Read};
+use std::io;
+use std::io::{Read, Write};
 
-pub trait Bytes0 : Read {
+pub trait Bytes0Read : Read {
     fn read_cstring_raw(&mut self) -> io::Result<Vec<u8>> {
         let it = self.bytes();
 
@@ -15,15 +15,31 @@ pub trait Bytes0 : Read {
     }
 }
 
-impl<R: io::Read> Bytes0 for R {
+pub trait Bytes0Write : Write {
+    fn write_cstring_raw(&mut self, data: &[u8]) -> io::Result<()> {
+        try!(self.write_all(data));
+        try!(self.write_all(&[0; 1]));
+        Ok(())
+    }
+}
+
+impl<R: Read> Bytes0Read for R {
+}
+
+impl<W: Write> Bytes0Write for W {
 }
 
 #[cfg(test)]
 mod test {
-    use cstring::Bytes0;
+    use cstring::{Bytes0Read, Bytes0Write};
 
+    #[test]
     fn test_cstring_raw() {
-        let mut buf = vec![61, 62, 63, 0];
-        assert_eq!(buf.as_slice().read_cstring_raw().unwrap(), b"abc")
+        let buf = vec![0x61, 0x62, 0x63, 0];
+        assert_eq!(buf.as_slice().read_cstring_raw().unwrap(), b"abc");
+
+        let mut out = Vec::new();
+        out.write_cstring_raw(b"abc").unwrap();
+        assert_eq!(buf, out);
     }
 }
