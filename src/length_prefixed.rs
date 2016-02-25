@@ -9,13 +9,13 @@ use std::io;
 /// Implements sending of byte-slices with a length prefix.
 pub trait LengthWriteExt : io::Write {
     fn write_u8_prefixed(&mut self, data: &[u8]) ->
-        io::Result< ()>;
+        io::Result<()>;
     fn write_u16_prefixed<T: ByteOrder>(&mut self, data: &[u8]) ->
-        io::Result< ()>;
+        io::Result<()>;
     fn write_u32_prefixed<T: ByteOrder>(&mut self, data: &[u8]) ->
-        io::Result< ()>;
+        io::Result<()>;
     fn write_u64_prefixed<T: ByteOrder>(&mut self, data: &[u8]) ->
-        io::Result< ()>;
+        io::Result<()>;
 }
 
 impl<W: io::Write> LengthWriteExt for W {
