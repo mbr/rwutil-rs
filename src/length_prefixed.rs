@@ -6,7 +6,7 @@
 use byteorder::{WriteBytesExt, ByteOrder};
 use std::io;
 
-/// Allow sending of byte-slices with length prefix.
+/// Implements sending of byte-slices with a length prefix.
 pub trait LengthWriteExt : io::Write {
     fn write_u8_prefixed(&mut self, data: &[u8]) ->
         io::Result< ()>;
