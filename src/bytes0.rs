@@ -1,8 +1,8 @@
 use std::io;
 use std::io::{Read, Write};
 
-pub trait Bytes0Read : Read {
-    fn read_cstring_raw(&mut self) -> io::Result<Vec<u8>> {
+pub trait ReadBytes0Ext : Read {
+    fn read_bytes0(&mut self) -> io::Result<Vec<u8>> {
         let it = self.bytes();
 
         let result: Result<Vec<u8>,_> =
@@ -15,31 +15,31 @@ pub trait Bytes0Read : Read {
     }
 }
 
-pub trait Bytes0Write : Write {
-    fn write_cstring_raw(&mut self, data: &[u8]) -> io::Result<()> {
+pub trait WriteBytes0Ext : Write {
+    fn write_bytes0(&mut self, data: &[u8]) -> io::Result<()> {
         try!(self.write_all(data));
         try!(self.write_all(&[0; 1]));
         Ok(())
     }
 }
 
-impl<R: Read> Bytes0Read for R {
+impl<R: Read> ReadBytes0Ext for R {
 }
 
-impl<W: Write> Bytes0Write for W {
+impl<W: Write> WriteBytes0Ext for W {
 }
 
 #[cfg(test)]
 mod test {
-    use cstring::{Bytes0Read, Bytes0Write};
+    use bytes0::{ReadBytes0Ext, WriteBytes0Ext};
 
     #[test]
-    fn test_cstring_raw() {
+    fn test_bytes0() {
         let buf = vec![0x61, 0x62, 0x63, 0];
-        assert_eq!(buf.as_slice().read_cstring_raw().unwrap(), b"abc");
+        assert_eq!(buf.as_slice().read_bytes0().unwrap(), b"abc");
 
         let mut out = Vec::new();
-        out.write_cstring_raw(b"abc").unwrap();
+        out.write_bytes0(b"abc").unwrap();
         assert_eq!(buf, out);
     }
 }

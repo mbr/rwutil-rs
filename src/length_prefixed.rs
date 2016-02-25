@@ -7,7 +7,7 @@ use byteorder::{ReadBytesExt, WriteBytesExt, ByteOrder};
 use std::io;
 
 /// Implements sending of byte-slices with a length prefix.
-pub trait LengthWriteExt : io::Write {
+pub trait WritePrefixedExt : io::Write {
     fn write_u8_prefixed(&mut self, data: &[u8]) ->
         io::Result<()>;
     fn write_u16_prefixed<T: ByteOrder>(&mut self, data: &[u8]) ->
@@ -19,7 +19,7 @@ pub trait LengthWriteExt : io::Write {
 }
 
 /// Implements reading length-prefixed data.
-pub trait LengthReadExt : io::Read {
+pub trait ReadPrefixedExt : io::Read {
     fn read_u8_prefixed(&mut self, buf: &mut Vec<u8>) ->
         io::Result<u8>;
     fn read_u16_prefixed<T: ByteOrder>(&mut self, buf: &mut Vec<u8>) ->
@@ -30,7 +30,7 @@ pub trait LengthReadExt : io::Read {
         io::Result<u64>;
 }
 
-impl<W: io::Write> LengthWriteExt for W {
+impl<W: io::Write> WritePrefixedExt for W {
     fn write_u8_prefixed(&mut self, data: &[u8]) ->
     io::Result<()> {
         try!(self.write_u8(data.len() as u8));
@@ -63,7 +63,7 @@ impl<W: io::Write> LengthWriteExt for W {
     }
 }
 
-impl<R: io::Read> LengthReadExt for R {
+impl<R: io::Read> ReadPrefixedExt for R {
     fn read_u8_prefixed(&mut self, mut buf: &mut Vec<u8>) -> io::Result<u8> {
         let len = try!(self.read_u8());
 
@@ -112,7 +112,7 @@ impl<R: io::Read> LengthReadExt for R {
 
 #[cfg(test)]
 mod test {
-    use length_prefixed::{LengthWriteExt, LengthReadExt};
+    use length_prefixed::{WritePrefixedExt, ReadPrefixedExt};
     use byteorder::{BigEndian, LittleEndian};
 
     #[test]
