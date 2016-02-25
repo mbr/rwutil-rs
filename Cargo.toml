@@ -1,7 +1,10 @@
 [package]
 name = "rwutil"
-version = "0.3.0"
+version = "0.3.1"
 authors = ["Marc Brinkmann <git@marcbrinkmann.de>"]
+license = "MIT"
+description = "Extends io::{Read,Write} with methods for reading length-prefixed strings"
+repository = "https://github.com/mbr/rwutil-rs"
 
 [dependencies]
-byteorder = "*"
+byteorder = "^0.4"
