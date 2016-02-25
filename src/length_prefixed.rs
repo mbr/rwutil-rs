@@ -62,18 +62,19 @@ impl<W: io::Write> LengthWriteExt for W {
 impl<R: io::Read> LengthReadExt for R {
     fn read_u8_prefixed(&mut self, mut buf: &mut Vec<u8>) -> io::Result<u8> {
         let len = try!(self.read_u8());
-        // expand size of data to fit new data
 
+        // expand size of buffer to fit new data. this will hopefully not
+        // shrink the vector
         buf.resize(len as usize, 0);
-        try!(self.read_exact(&mut buf));
 
+        try!(self.read_exact(&mut buf));
         Ok(len)
     }
 }
 
 #[cfg(test)]
 mod test {
-    use length_prefixed::LengthWriteExt;
+    use length_prefixed::{LengthWriteExt, LengthReadExt};
     use byteorder::{BigEndian, LittleEndian};
 
     #[test]
@@ -83,6 +84,10 @@ mod test {
         buf.write_u8_prefixed(b"abcde").unwrap();
 
         assert_eq!(&expected, &buf);
+
+        let mut out: Vec<u8> = Vec::new();
+        buf.as_slice().read_u8_prefixed(&mut out);
+        assert_eq!(out, b"abcde");
     }
 
     #[test]
