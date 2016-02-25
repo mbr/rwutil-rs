@@ -51,7 +51,6 @@ impl<W: io::Write> LengthWriteExt for W {
     io::Result<()> {
         try!(self.write_u32::<T>(data.len() as u32));
         try!(self.write_all(&data));
-
         Ok(())
     }
 
