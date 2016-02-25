@@ -18,6 +18,7 @@ pub trait LengthWriteExt : io::Write {
         io::Result<()>;
 }
 
+/// Implements reading length-prefixed data.
 pub trait LengthReadExt : io::Read {
     fn read_u8_prefixed(&mut self, buf: &mut Vec<u8>) ->
         io::Result<u8>;
