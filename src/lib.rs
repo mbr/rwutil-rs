@@ -15,5 +15,5 @@
 //! especially if you are handling untrusted user input.
 
 extern crate byteorder;
-mod bytes0;
-mod length_prefixed;
+pub mod bytes0;
+pub mod length_prefixed;
