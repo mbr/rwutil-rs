@@ -79,8 +79,10 @@ impl<R: io::Read> LengthReadExt for R {
     io::Result<u16> {
         let len = try!(self.read_u16::<T>());
 
-        // expand size of buffer to fit new data. this will hopefully not
-        // shrink the vector
+        // FIXME: probably better to grow vector dynamically here; as
+        // preallocating this much memory could be an invitation for DOS
+        // attacks. same goes for u32 and u64 below
+
         buf.resize(len as usize, 0);
 
         try!(self.read_exact(&mut buf));
@@ -91,8 +93,6 @@ impl<R: io::Read> LengthReadExt for R {
     io::Result<u32> {
         let len = try!(self.read_u32::<T>());
 
-        // expand size of buffer to fit new data. this will hopefully not
-        // shrink the vector
         buf.resize(len as usize, 0);
 
         try!(self.read_exact(&mut buf));
@@ -103,8 +103,6 @@ impl<R: io::Read> LengthReadExt for R {
     io::Result<u64> {
         let len = try!(self.read_u64::<T>());
 
-        // expand size of buffer to fit new data. this will hopefully not
-        // shrink the vector
         buf.resize(len as usize, 0);
 
         try!(self.read_exact(&mut buf));
