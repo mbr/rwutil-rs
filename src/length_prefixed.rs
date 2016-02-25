@@ -1,7 +1,7 @@
-//! Length-prefixed stream packets
+//! Length-prefixed reading and writing
 //!
-//! Implements a popular format for sending data packets: First, a 32-bit
-//! integer in big endian byte order is sent with the length of the data,
+//! Implements a popular format for sending data packets: First, a fixed width
+//! integer in a fixed byte order is sent with the length of the data,
 //! followed by the actual data.
 use byteorder::{WriteBytesExt, ByteOrder};
 use std::io;
