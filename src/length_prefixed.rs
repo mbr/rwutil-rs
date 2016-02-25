@@ -32,7 +32,7 @@ pub trait LengthReadExt : io::Read {
 
 impl<W: io::Write> LengthWriteExt for W {
     fn write_u8_prefixed(&mut self, data: &[u8]) ->
-    io::Result< ()> {
+    io::Result<()> {
         try!(self.write_u8(data.len() as u8));
         try!(self.write_all(&data));
 
@@ -40,7 +40,7 @@ impl<W: io::Write> LengthWriteExt for W {
     }
 
     fn write_u16_prefixed<T: ByteOrder>(&mut self, data: &[u8]) ->
-    io::Result< ()> {
+    io::Result<()> {
         try!(self.write_u16::<T>(data.len() as u16));
         try!(self.write_all(&data));
 
@@ -48,7 +48,7 @@ impl<W: io::Write> LengthWriteExt for W {
     }
 
     fn write_u32_prefixed<T: ByteOrder>(&mut self, data: &[u8]) ->
-    io::Result< ()> {
+    io::Result<()> {
         try!(self.write_u32::<T>(data.len() as u32));
         try!(self.write_all(&data));
 
@@ -56,7 +56,7 @@ impl<W: io::Write> LengthWriteExt for W {
     }
 
     fn write_u64_prefixed<T: ByteOrder>(&mut self, data: &[u8]) ->
-    io::Result< ()> {
+    io::Result<()> {
         try!(self.write_u64::<T>(data.len() as u64));
         try!(self.write_all(&data));
 
