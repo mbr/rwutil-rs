@@ -83,7 +83,7 @@ mod test {
         let expected = vec![5, 0x61, 0x62, 0x63, 0x64, 0x65];
         buf.write_u8_prefixed(b"abcde").unwrap();
 
-        assert_eq!(&expected, &buf);
+        assert_eq!(expected, buf);
 
         let mut out: Vec<u8> = Vec::new();
         buf.as_slice().read_u8_prefixed(&mut out);
@@ -96,7 +96,7 @@ mod test {
         let expected = vec![0, 5, 0x61, 0x62, 0x63, 0x64, 0x65];
         buf.write_u16_prefixed::<BigEndian>(b"abcde").unwrap();
 
-        assert_eq!(&expected, &buf);
+        assert_eq!(expected, buf);
     }
 
     #[test]
@@ -105,7 +105,7 @@ mod test {
         let expected = vec![0, 0, 0, 5, 0x61, 0x62, 0x63, 0x64, 0x65];
         buf.write_u32_prefixed::<BigEndian>(b"abcde").unwrap();
 
-        assert_eq!(&expected, &buf);
+        assert_eq!(expected, buf);
     }
 
     #[test]
@@ -115,7 +115,7 @@ mod test {
                             0x61, 0x62, 0x63, 0x64, 0x65];
         buf.write_u64_prefixed::<BigEndian>(b"abcde").unwrap();
 
-        assert_eq!(&expected, &buf);
+        assert_eq!(expected, buf);
     }
 
     #[test]
@@ -124,7 +124,7 @@ mod test {
         let expected = vec![5, 0, 0x61, 0x62, 0x63, 0x64, 0x65];
         buf.write_u16_prefixed::<LittleEndian>(b"abcde").unwrap();
 
-        assert_eq!(&expected, &buf);
+        assert_eq!(expected, buf);
     }
 
     #[test]
@@ -133,7 +133,7 @@ mod test {
         let expected = vec![5, 0, 0, 0, 0x61, 0x62, 0x63, 0x64, 0x65];
         buf.write_u32_prefixed::<LittleEndian>(b"abcde").unwrap();
 
-        assert_eq!(&expected, &buf);
+        assert_eq!(expected, buf);
     }
 
     #[test]
@@ -143,6 +143,6 @@ mod test {
                             0x61, 0x62, 0x63, 0x64, 0x65];
         buf.write_u64_prefixed::<LittleEndian>(b"abcde").unwrap();
 
-        assert_eq!(&expected, &buf);
+        assert_eq!(expected, buf);
     }
 }
