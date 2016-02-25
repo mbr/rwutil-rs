@@ -1,2 +1,2 @@
-#[cfg(test)]
-mod test;
+extern crate byteorder;
+mod length_prefixed;
