@@ -3,7 +3,7 @@
 //! Implements a popular format for sending data packets: First, a fixed width
 //! integer in a fixed byte order is sent with the length of the data,
 //! followed by the actual data.
-use byteorder::{WriteBytesExt, ByteOrder};
+use byteorder::{ReadBytesExt, WriteBytesExt, ByteOrder};
 use std::io;
 
 /// Implements sending of byte-slices with a length prefix.
@@ -16,6 +16,13 @@ pub trait LengthWriteExt : io::Write {
         io::Result<()>;
     fn write_u64_prefixed<T: ByteOrder>(&mut self, data: &[u8]) ->
         io::Result<()>;
+}
+
+pub trait LengthReadExt : io::Read {
+    fn read_u8_prefixed(&mut self, buf: &mut Vec<u8>) ->
+        io::Result<u8>;
+    // fn read_u16_prefixed(&mut self, buf: &mut Vec<u8>) ->
+    //     io::Result<u16>;
 }
 
 impl<W: io::Write> LengthWriteExt for W {
@@ -49,6 +56,18 @@ impl<W: io::Write> LengthWriteExt for W {
         try!(self.write_all(&data));
 
         Ok(())
+    }
+}
+
+impl<R: io::Read> LengthReadExt for R {
+    fn read_u8_prefixed(&mut self, mut buf: &mut Vec<u8>) -> io::Result<u8> {
+        let len = try!(self.read_u8());
+        // expand size of data to fit new data
+
+        buf.resize(len as usize, 0);
+        try!(self.read_exact(&mut buf));
+
+        Ok(len)
     }
 }
 
