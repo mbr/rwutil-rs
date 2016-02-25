@@ -14,7 +14,7 @@ pub trait LengthWriteExt : io::Write {
 impl<W: io::Write> LengthWriteExt for W {
     fn send_length_prefixed(&mut self, data: &[u8]) -> io::Result<()> {
         try!(self.write_u32::<BigEndian>(data.len() as u32));
-        try!(self.write(&data));
+        try!(self.write_all(&data));
 
         Ok(())
     }
