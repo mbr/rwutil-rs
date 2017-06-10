@@ -5,7 +5,7 @@ authors = ["Marc Brinkmann <git@marcbrinkmann.de>"]
 license = "MIT"
 description = "Extends io::{Read,Write} with methods for reading length-prefixed strings"
 repository = "https://github.com/mbr/rwutil-rs"
-documentation = "https://mbr.github.io/rwutil-rs/rwutil"
+documentation = "https://docs.rs/rwutil"
 
 [dependencies]
 byteorder = "1.0.0"
